@@ -1,7 +1,7 @@
 === Advanced Mobile Redirect ===
 Contributors: Slimspots
 Donate link: NA
-Tags: mobile, redirect, url, mobile redirect, mobile detect
+Tags: mobile, redirect, url, mobile redirect, mobile detect, iphone, android, smartphone, windows phone
 Requires at least: 3.9
 Tested up to: 4.1.1
 Stable tag: 1.0.0
@@ -25,7 +25,7 @@ e.g.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Go to Settings > Advanced Mobile Redirect.
 4. Check `Enable Redirect` for various devices and put in a full path URL (inluding http://) to the website you would like to redirect mobile traffic from device to.
-5. Select the method of redirect you want.  301 is generally the best option.
+5. Select the method of redirect you want. 301 is generally the best option.
 6. Hit `Save` and you are done.
 
 == Screenshots ==
