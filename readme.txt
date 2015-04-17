@@ -21,7 +21,7 @@ This section describes how to install the plugin and get it working.
 
 e.g.
 
-1. Upload `mobile-redirect.php` to the `/wp-content/plugins/` directory.
+1. Upload Plugin Order to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Go to Settings > Advanced Mobile Redirect.
 4. Check `Enable Redirect` for various devices and put in a full path URL (inluding http://) to the website you would like to redirect mobile traffic from device to.
@@ -30,7 +30,7 @@ e.g.
 
 == Screenshots ==
 
-1. screenshot1.png
+1. screenshot-1.png
 
 == Frequently Asked Questions ==
 
@@ -44,3 +44,4 @@ Clear the cache and you should be fine.
 * Original Release
 
 == Upgrade Notice == 
+- Fix Errors
