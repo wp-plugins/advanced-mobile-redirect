@@ -31,6 +31,7 @@ e.g.
 == Screenshots ==
 
 1. screenshot-1.png
+2. banner-772×250.png
 
 == Frequently Asked Questions ==
 
@@ -45,3 +46,4 @@ Clear the cache and you should be fine.
 
 == Upgrade Notice == 
 - Fix Errors
+- Add Banner Image
