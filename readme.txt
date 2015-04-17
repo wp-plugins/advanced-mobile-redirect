@@ -33,6 +33,7 @@ e.g.
 1. screenshot-1.png
 2. banner-772×250.png
 3. icon-128x128.png
+4. banner-1544×500.png
 
 == Frequently Asked Questions ==
 
