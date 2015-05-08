@@ -3,8 +3,8 @@ Contributors: Slimspots
 Donate link: NA
 Tags: mobile, redirect, url, mobile redirect, mobile detect, iphone, android, smartphone, windows phone
 Requires at least: 3.9
-Tested up to: 4.2
-Stable tag: 1.0.0
+Tested up to: 4.2.1
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,11 @@ Clear the cache and you should be fine.
 = 1.0 =
 * Original Release
 
+= 1.1 =
+* Backlink to Full Website Feature added
+* Small Fixies
+
 == Upgrade Notice == 
+- Backlink to Full Website
 - Fix Errors
 - Add Icon and Banner Image

@@ -3,7 +3,7 @@
 Plugin Name: Advanced Mobile Redirect
 Description: Select a URL to redirect mobile users by device type
 Author: Slimspots
-Version: 1.0
+Version: 1.1
 Author URI: http://www.slimspots.net
  */
 
@@ -68,7 +68,7 @@ class IOS_Mobile_Redirect{
         //init function
 	add_action( 'admin_init', array( &$this, 'admin_init' ) );
 	add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
-	add_action( 'template_redirect', array( &$this, 'template_redirect' ) ); 
+	add_action( 'template_redirect', array( &$this, 'template_redirect' ) ); //fix from amclin
 
         update_option( 'mobileredirecttoggle', true );
         /* if ( get_option( 'mobileredirecttoggle' ) == 'true' ){
@@ -345,6 +345,15 @@ class IOS_Mobile_Redirect{
 	                                <label for="other_redirect_toggle" style="font-size:11px;"><?php _e( ' Enable Redirect', 'mobile-redirect' ); ?></label>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th scope="row">Back to full version website</th>
+                                    <td>
+                                        <div style="min-height:21px;padding:3px 5px;width:338px;">
+                                            <?php echo site_url()."/?main=true"; ?>
+                                        </div>
+                                        <p class="description">Place this link in mobile website for Redirect back mobile visitor to main website</p>
+                                    </td>
+                                </tr>
 		                <tr valign="top">
                                     <th scope="row"><?php submit_button(); ?></th>
                                     <td>
@@ -372,8 +381,9 @@ function template_redirect() {
     $detect = new Mobile_Detect;
     $cur_url = esc_url("http://". $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] );
 
-    // do stuff only if its mobile
-    if ($detect->isMobile() || $detect->isTablet()){
+    
+    // do stuff only if its mobile and session for main site is not set
+    if ($detect->isMobile() || $detect->isTablet() && !isset($_SESSION['amr_main'])){
 
         // check if any of the options is toogled
         if (amr_is_anything_toggled() == true){
@@ -469,9 +479,38 @@ function template_redirect() {
             
         }
 
+    }else{
+        // die("SESSION DONE;".$_SESSION['amr_main']);
     }
 
 }
 
 }
+
+/**
+ * Start session
+ */
+function amr_start_session(){
+    if(!session_id()) {
+        session_start();
+    }
+    if (isset($_REQUEST["main"])){
+        amr_session_set();
+    }
+}
+/**
+ * End session
+ */
+function amr_end_session(){
+    session_destroy();    
+}
+/**
+ * Set main site session
+ */
+function amr_session_set(){
+    if (!isset($_SESSION['amr_main'])) $_SESSION['amr_main'] = 1;
+}
+add_action('init', 'amr_start_session', 1);
+add_action('wp_logout', 'amr_end_session');
+add_action('wp_login', 'amr_end_session');
 // eof
