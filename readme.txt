@@ -1,18 +1,19 @@
 === Advanced Mobile Redirect ===
 Contributors: Slimspots
 Donate link: NA
-Tags: mobile, redirect, url, mobile redirect, mobile detect, iphone, android, smartphone, windows phone
+Tags: mobile, redirect, url, mobile redirect, mobile detect, iphone, android, smartphone, windows phone, geoip, geo-targeting
 Requires at least: 3.9
-Tested up to: 4.2.1
-Stable tag: 1.1
+Tested up to: 4.2.2
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin allows you to put in a full path URL to redirect various mobile traffic.
+This plugin allows you to put in a full path URL to redirect various mobile traffic with GEO-targeting and Device specific targeting.
 
 == Description ==
 
-A Advanced Mobile Redirect Plugin for those who use a various URL for various mobile devices. Simply put your redirect URL and you are ready to send users to your mobile-only content.
+A Advanced Mobile Redirect Plugin for those who use a various URL for mobile devices with GEO-targeting and Device specific targeting. 
+Simply put your redirect URL, enable it with the check-box and you are ready to send users to your mobile-only content.
 
 
 == Installation ==
@@ -46,11 +47,16 @@ Clear the cache and you should be fine.
 = 1.0 =
 * Original Release
 
-= 1.1 =
+= 1.1.1 =
 * Backlink to Full Website Feature added
+* Small Fixies
+
+= 1.2 =
+* GEO-targeting added
 * Small Fixies
 
 == Upgrade Notice == 
 - Backlink to Full Website
 - Fix Errors
 - Add Icon and Banner Image
+- GEO-targeting added

@@ -3,7 +3,7 @@
 Plugin Name: Advanced Mobile Redirect
 Description: Select a URL to redirect mobile users by device type
 Author: Slimspots
-Version: 1.1
+Version: 1.2
 Author URI: http://www.slimspots.net
  */
 
@@ -15,47 +15,57 @@ Plugin based on a previous basic version of the Mobile Redirect Ozette Plugins (
 
 
 require_once("libs/amr-general.inc.php");
+require_once("libs/geoip.inc.php");
 
 $ios_mobile_redirect = new IOS_Mobile_Redirect();
+$geo_ip = new GeoIP();
 
 register_uninstall_hook( __FILE__, 'uninstall_mobile_redirect' );
 function uninstall_mobile_redirect() {
     delete_option( 'iphone_redirect_url' );
+    delete_option( 'iphone_redirect_country' );
     delete_option( 'iphone_redirect_mode' );
     delete_option( 'iphone_redirect_home' );
     delete_option( 'iphone_redirect_toggle' );
 
     delete_option( 'ipad_redirect_url' );
+    delete_option( 'ipad_redirect_country' );    
     delete_option( 'ipad_redirect_mode' );
     delete_option( 'ipad_redirect_home' );
     delete_option( 'ipad_redirect_toggle' );
 
     delete_option( 'android_redirect_url' );
+    delete_option( 'android_redirect_country' );    
     delete_option( 'android_redirect_mode' );
     delete_option( 'android_redirect_home' );
     delete_option( 'android_redirect_toggle' );
 
     delete_option( 'blackberry_redirect_url' );
+    delete_option( 'blackberry_redirect_country' );        
     delete_option( 'blackberry_redirect_mode' );
     delete_option( 'blackberry_redirect_home' );
     delete_option( 'blackberry_redirect_toggle' );
 
     delete_option( 'windowsm_redirect_url' );
+    delete_option( 'windowsm_redirect_country' );        
     delete_option( 'windowsm_redirect_mode' );
     delete_option( 'windowsm_redirect_home' );
     delete_option( 'windowsm_redirect_toggle' );
 
     delete_option( 'opera_redirect_url' );
+    delete_option( 'opera_redirect_country' );        
     delete_option( 'opera_redirect_mode' );
     delete_option( 'opera_redirect_home' );
     delete_option( 'opera_redirect_toggle' );
 
     delete_option( 'palm_redirect_url' );
+    delete_option( 'palm_redirect_country' );            
     delete_option( 'palm_redirect_mode' );
     delete_option( 'palm_redirect_home' );
     delete_option( 'palm_redirect_toggle' );
 
     delete_option( 'other_redirect_url' );
+    delete_option( 'other_redirect_country' );            
     delete_option( 'other_redirect_mode' );
     delete_option( 'other_redirect_home' );
     delete_option( 'other_redirect_toggle' );
@@ -91,6 +101,9 @@ class IOS_Mobile_Redirect{
     }
 
     function page() {
+
+        global $geo_ip;
+        
         //admin options page
 	if ( isset( $_POST['iphone_redirect_url'] ) ) {
             // urls
@@ -102,6 +115,18 @@ class IOS_Mobile_Redirect{
             update_option( 'opera_redirect_url', esc_url_raw( $_POST['opera_redirect_url'] ) );
             update_option( 'palm_redirect_url', esc_url_raw( $_POST['palm_redirect_url'] ) );
             update_option( 'other_redirect_url', esc_url_raw( $_POST['other_redirect_url'] ) );
+
+
+            // countries
+            update_option( 'iphone_redirect_country', esc_attr( $_POST['iphone_redirect_country'] ) );
+            update_option( 'ipad_redirect_country', esc_attr( $_POST['ipad_redirect_country'] ) );
+            update_option( 'android_redirect_country', esc_attr( $_POST['android_redirect_country'] ) );
+            update_option( 'blackberry_redirect_country', esc_attr( $_POST['blackberry_redirect_country'] ) );
+            update_option( 'windowsm_redirect_country', esc_attr( $_POST['windowsm_redirect_country'] ) );
+            update_option( 'opera_redirect_country', esc_attr( $_POST['opera_redirect_country'] ) );
+            update_option( 'palm_redirect_country', esc_attr( $_POST['palm_redirect_country'] ) );
+            update_option( 'other_redirect_country', esc_attr( $_POST['other_redirect_country'] ) );
+            
 
             // redirect modes
             update_option( 'iphone_redirect_mode', intval( $_POST['iphone_redirect_mode'] ) );
@@ -136,8 +161,14 @@ class IOS_Mobile_Redirect{
 
 	    echo '<div class="updated"><p>' . __( 'Updated', 'mobile-redirect' ) . '</p></div>';
 	}
-
+                                                    
 ?>
+<style type="text/css">
+ .amr_country_sel{
+     /*max-width:120px;*/
+     font-weight:bold;
+ }
+</style>
 <div class="wrap"><h2><?php _e( 'Advanced Mobile Redirect', 'mobile-redirect' ); ?></h2>
 <p><a href="http://www.slimspots.net"><img src="http://slimspots.org/adview.gif"></a></p>
     <p>
@@ -159,9 +190,9 @@ class IOS_Mobile_Redirect{
                         <table class="form-table">
                             <tbody>
 
-
                                 <tr valign="top">
                                     <th scope="row">&nbsp;</th>
+                                    <th scope="row" style="padding-left:10px;width:120px;">Country</th>
                                     <th scope="row" style="padding-left:10px;">Redirect URL</th>
                                     <th scope="row" style="padding-left:10px;" width="100">Redirect Mode</th>
                                     <th scope="row">&nbsp;</th>
@@ -171,6 +202,15 @@ class IOS_Mobile_Redirect{
 
                                 <tr valign="top">
                                     <th scope="row">iPhone/iPod Touch:</th>
+                                    <td>
+                                        <select class="amr_country_sel" id="iphone_redirect_country" name="iphone_redirect_country">
+                                            <?php
+                                            foreach ($geo_ip->GEOIP_COUNTRY_NAMES as $aK => $s_country){
+                                                echo "<option value='".$geo_ip->GEOIP_COUNTRY_CODES[$aK]."' ".(get_option('iphone_redirect_country') == $geo_ip->GEOIP_COUNTRY_CODES[$aK] ? "selected='selected'" : "").">".(empty($s_country) ? "ALL" : $s_country)."</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>
                                     <td>
                                         <input type="text" name="iphone_redirect_url" id="iphone_redirect_url" value="<?php echo esc_url( get_option('iphone_redirect_url', '') ); ?>" />
                                     </td>
@@ -194,6 +234,15 @@ class IOS_Mobile_Redirect{
                                 <tr valign="top">
                                     <th scope="row">iPad</th>
                                     <td>
+                                        <select class="amr_country_sel" id="ipad_redirect_country" name="ipad_redirect_country">
+                                            <?php
+                                            foreach ($geo_ip->GEOIP_COUNTRY_NAMES as $aK => $s_country){
+                                                echo "<option value='".$geo_ip->GEOIP_COUNTRY_CODES[$aK]."' ".(get_option('ipad_redirect_country') == $geo_ip->GEOIP_COUNTRY_CODES[$aK] ? "selected='selected'" : "").">".(empty($s_country) ? "ALL" : $s_country)."</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>                                    
+                                    <td>
                                         <input type="text" name="ipad_redirect_url" id="ipad_redirect_url" value="<?php echo esc_url( get_option('ipad_redirect_url', '') ); ?>" />
                                     </td>
                                     <td>
@@ -216,6 +265,15 @@ class IOS_Mobile_Redirect{
                                 <tr valign="top">
                                     <th scope="row">Android</th>
                                     <td>
+                                        <select class="amr_country_sel" id="android_redirect_country" name="android_redirect_country">
+                                            <?php
+                                            foreach ($geo_ip->GEOIP_COUNTRY_NAMES as $aK => $s_country){
+                                                echo "<option value='".$geo_ip->GEOIP_COUNTRY_CODES[$aK]."' ".(get_option('android_redirect_country') == $geo_ip->GEOIP_COUNTRY_CODES[$aK] ? "selected='selected'" : "").">".(empty($s_country) ? "ALL" : $s_country)."</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>
+                                    <td>
                                         <input type="text" name="android_redirect_url" id="android_redirect_url" value="<?php echo esc_url( get_option('android_redirect_url', '') ); ?>" />
                                     </td>
                                     <td>
@@ -237,6 +295,15 @@ class IOS_Mobile_Redirect{
 
 		                <tr valign="top">
                                     <th scope="row">Blackberry</th>
+                                    <td>
+                                        <select class="amr_country_sel" id="blackberry_redirect_country" name="blackberry_redirect_country">
+                                            <?php
+                                            foreach ($geo_ip->GEOIP_COUNTRY_NAMES as $aK => $s_country){
+                                                echo "<option value='".$geo_ip->GEOIP_COUNTRY_CODES[$aK]."' ".(get_option('blackberry_redirect_country') == $geo_ip->GEOIP_COUNTRY_CODES[$aK] ? "selected='selected'" : "").">".(empty($s_country) ? "ALL" : $s_country)."</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>
                                     <td>
                                         <input type="text" name="blackberry_redirect_url" id="blackberry_redirect_url" value="<?php echo esc_url( get_option('blackberry_redirect_url', '') ); ?>" />
                                     </td>
@@ -261,6 +328,15 @@ class IOS_Mobile_Redirect{
                                 <tr valign="top">
                                     <th scope="row">Windows Mobile</th>
                                     <td>
+                                        <select class="amr_country_sel" id="windowsm_redirect_country" name="windowsm_redirect_country">
+                                            <?php
+                                            foreach ($geo_ip->GEOIP_COUNTRY_NAMES as $aK => $s_country){
+                                                echo "<option value='".$geo_ip->GEOIP_COUNTRY_CODES[$aK]."' ".(get_option('windowsm_redirect_country') == $geo_ip->GEOIP_COUNTRY_CODES[$aK] ? "selected='selected'" : "").">".(empty($s_country) ? "ALL" : $s_country)."</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>                                    
+                                    <td>
                                         <input type="text" name="windowsm_redirect_url" id="windowsm_redirect_url" value="<?php echo esc_url( get_option('windowsm_redirect_url', '') ); ?>" />
                                     </td>
                                     <td>
@@ -282,6 +358,15 @@ class IOS_Mobile_Redirect{
 
                                 <tr valign="top">
                                     <th scope="row">Opera Mini</th>
+                                    <td>
+                                        <select class="amr_country_sel" id="opera_redirect_country" name="opera_redirect_country">
+                                            <?php
+                                            foreach ($geo_ip->GEOIP_COUNTRY_NAMES as $aK => $s_country){
+                                                echo "<option value='".$geo_ip->GEOIP_COUNTRY_CODES[$aK]."' ".(get_option('opera_redirect_country') == $geo_ip->GEOIP_COUNTRY_CODES[$aK] ? "selected='selected'" : "").">".(empty($s_country) ? "ALL" : $s_country)."</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>                                    
                                     <td>
                                         <input type="text" name="opera_redirect_url" id="opera_redirect_url" value="<?php echo esc_url( get_option('opera_redirect_url', '') ); ?>" />
                                     </td>
@@ -305,6 +390,15 @@ class IOS_Mobile_Redirect{
                                 <tr valign="top">
                                     <th scope="row">Palm Os</th>
                                     <td>
+                                        <select class="amr_country_sel" id="palm_redirect_country" name="palm_redirect_country">
+                                            <?php
+                                            foreach ($geo_ip->GEOIP_COUNTRY_NAMES as $aK => $s_country){
+                                                echo "<option value='".$geo_ip->GEOIP_COUNTRY_CODES[$aK]."' ".(get_option('palm_redirect_country') == $geo_ip->GEOIP_COUNTRY_CODES[$aK] ? "selected='selected'" : "").">".(empty($s_country) ? "ALL" : $s_country)."</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>                            
+                                    <td>
                                         <input type="text" name="palm_redirect_url" id="palm_redirect_url" value="<?php echo esc_url( get_option('palm_redirect_url', '') ); ?>" />
                                     </td>
                                     <td>
@@ -327,6 +421,15 @@ class IOS_Mobile_Redirect{
                                 <tr valign="top">
                                     <th scope="row">Other Mobile Device</th>
                                     <td>
+                                        <select class="amr_country_sel" id="other_redirect_country" name="other_redirect_country">
+                                            <?php
+                                            foreach ($geo_ip->GEOIP_COUNTRY_NAMES as $aK => $s_country){
+                                                echo "<option value='".$geo_ip->GEOIP_COUNTRY_CODES[$aK]."' ".(get_option('other_redirect_country') == $geo_ip->GEOIP_COUNTRY_CODES[$aK] ? "selected='selected'" : "").">".(empty($s_country) ? "ALL" : $s_country)."</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>                                    
+                                    <td>
                                         <input type="text" name="other_redirect_url" id="other_redirect_url" value="<?php echo esc_url( get_option('other_redirect_url', '') ); ?>" />
                                     </td>
                                     <td>
@@ -348,7 +451,7 @@ class IOS_Mobile_Redirect{
                                 <tr>
                                     <th scope="row">Back to full version website</th>
                                     <td>
-                                        <div style="min-height:21px;padding:3px 5px;width:338px;">
+                                        <div style="background:#408CEA;color:#FFFFFF;font-weight:bold;min-height:21px;padding:3px 5px;width:338px;">
                                             <?php echo site_url()."/?main=true"; ?>
                                         </div>
                                         <p class="description">Place this link in mobile website for Redirect back mobile visitor to main website</p>
@@ -380,7 +483,8 @@ function template_redirect() {
     require_once("libs/Mobile_Detect.php");
     $detect = new Mobile_Detect;
     $cur_url = esc_url("http://". $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] );
-
+    
+    
     
     // do stuff only if its mobile and session for main site is not set
     if ($detect->isMobile() || $detect->isTablet() && !isset($_SESSION['amr_main'])){
@@ -394,6 +498,7 @@ function template_redirect() {
             if (get_option( 'iphone_redirect_toggle' ) == '1' && $detect->isiPhone() ){
                 $amr_redirect_options = Array(
                     'url'=> get_option( 'iphone_redirect_url' ),
+                    'country'=> get_option( 'iphone_redirect_country' ),
                     'mode'=>get_option( 'iphone_redirect_mode' ),
                     'only_home'=>get_option( 'iphone_redirect_home' )
                 );
@@ -402,6 +507,7 @@ function template_redirect() {
             if (get_option( 'ipad_redirect_toggle' ) == '1' && $detect->isiPad() ){
                 $amr_redirect_options = Array(
                     'url'=> get_option( 'ipad_redirect_url' ),
+                    'country'=> get_option( 'ipad_redirect_country' ),                    
                     'mode'=>get_option( 'ipad_redirect_mode' ),
                     'only_home'=>get_option( 'ipad_redirect_home' )
                 );
@@ -410,6 +516,7 @@ function template_redirect() {
             if (get_option( 'android_redirect_toggle' ) == '1' && $detect->isAndroidOS() ){
                 $amr_redirect_options = Array(
                     'url'=> get_option( 'android_redirect_url' ),
+                    'country'=> get_option( 'android_redirect_country' ),                    
                     'mode'=>get_option( 'android_redirect_mode' ),
                     'only_home'=>get_option( 'android_redirect_home' )
                 );
@@ -418,6 +525,7 @@ function template_redirect() {
             if (get_option( 'blackberry_redirect_toggle' ) == '1' && $detect->isBlackBerryOS() ){
                 $amr_redirect_options = Array(
                     'url'=> get_option( 'blackberry_redirect_url' ),
+                    'country'=> get_option( 'blackberry_redirect_country' ),                                        
                     'mode'=>get_option( 'blackberry_redirect_mode' ),
                     'only_home'=>get_option( 'blackberry_redirect_home' )
                 );
@@ -426,6 +534,7 @@ function template_redirect() {
             if (get_option( 'windowsm_redirect_toggle' ) == '1' && $detect->isWindowsMobileOS() ){
                 $amr_redirect_options = Array(
                     'url'=> get_option( 'windowsm_redirect_url' ),
+                    'country'=> get_option( 'windowsm_redirect_country' ),                                                            
                     'mode'=>get_option( 'windowsm_redirect_mode' ),
                     'only_home'=>get_option( 'windowsm_redirect_home' )
                 );
@@ -434,6 +543,7 @@ function template_redirect() {
             if (get_option( 'opera_redirect_toggle' ) == '1' && $detect->isOpera() ){
                 $amr_redirect_options = Array(
                     'url'=> get_option( 'opera_redirect_url' ),
+                    'country'=> get_option( 'opera_redirect_country' ),                    
                     'mode'=>get_option( 'opera_redirect_mode' ),
                     'only_home'=>get_option( 'opera_redirect_home' )
                 );
@@ -442,6 +552,7 @@ function template_redirect() {
             if (get_option( 'palm_redirect_toggle' ) == '1' && $detect->isPalmOS() ){
                 $amr_redirect_options = Array(
                     'url'=> get_option( 'palm_redirect_url' ),
+                    'country'=> get_option( 'palm_redirect_country' ),                                        
                     'mode'=>get_option( 'palm_redirect_mode' ),
                     'only_home'=>get_option( 'palm_redirect_home' )
                 );
@@ -450,6 +561,7 @@ function template_redirect() {
             if (get_option( 'other_redirect_toggle' ) == '1' &&  ($detect->isMobile() || $detect->isTablet())  ){
                 $amr_redirect_options = Array(
                     'url'=> get_option( 'other_redirect_url' ),
+                    'country'=> get_option( 'other_redirect_country' ),                                                            
                     'mode'=>get_option( 'other_redirect_mode' ),
                     'only_home'=>get_option( 'other_redirect_home' )
                 );
@@ -467,11 +579,33 @@ function template_redirect() {
             if( $amr_redirect_options['home'] == '1'){
 	        if( ! is_front_page() )	return;
             }
+
+
+
             
 
             // FINAL STEP
             // make sure we don't redirect to ourself
             if ( $amr_redirect_options['url'] != $cur_url ) {
+
+                $do_redirect_country = false;
+                // check country code
+                if (!empty($amr_redirect_options['country'])){
+                    $gi = geoip_open(plugin_dir_path(__FILE__)."libs/GeoIP.dat",GEOIP_STANDARD);
+                    $country_code = geoip_country_code_by_addr($gi, $_SERVER['REMOTE_ADDR']);
+                    if ($country_code == $amr_redirect_options['country']){
+                        $do_redirect_country = true;
+                    }
+                    geoip_close($gi);
+                }else{
+                    // if not sent then redirect ALL countries
+                    $do_redirect_country = true;
+                }
+
+                
+                // if country do not match then do not redirect
+                if (!$do_redirect_country) return;
+                
                 header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
                 wp_redirect( $amr_redirect_options['url'], $amr_redirect_options['mode'] );
                 exit;
